@@ -1,10 +1,22 @@
+/**
+ * @file This script compares the contents of a directory with a CSV file that contains a list of files and their metadata.
+ * It is used to audit the directory and identify any changes since the CSV file was created.
+ * The script will exit with a status code of 1 if any discrepancies are found, and 0 otherwise.
+ * @see README.md
+ * @see Instructions-EN.md
+ * @see Instruktionen-DE.md
+ */
 const fs = require('fs');
 
 // Configuration
 const CSV_FILE = 'ocr-data.csv';
 const SCRIPT_FILE = 'compare-listings.js';
 
-// Parse CSV date format (DD.MM.YYYY HH:MM:SS) to Date object
+/**
+ * Parses a date string from the CSV file into a Date object.
+ * @param {string} dateStr The date string to parse, in 'DD.MM.YYYY HH:MM:SS' format.
+ * @returns {Date|null} The parsed Date object, or null if parsing fails.
+ */
 function parseCSVDate(dateStr) {
   try {
     const [datePart, timePart] = dateStr.trim().split(' ');
@@ -17,7 +29,11 @@ function parseCSVDate(dateStr) {
   }
 }
 
-// Format Date object to CSV format (DD.MM.YYYY HH:MM:SS)
+/**
+ * Formats a Date object into a string for display.
+ * @param {Date} date The Date object to format.
+ * @returns {string} The formatted date string, in 'DD.MM.YYYY HH:MM:SS' format.
+ */
 function formatDate(date) {
   const pad = (num) => num.toString().padStart(2, '0');
   const day = pad(date.getDate());
@@ -29,7 +45,11 @@ function formatDate(date) {
   return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 }
 
-// Read and parse CSV file
+/**
+ * Reads and parses the specified CSV file.
+ * @param {string} filename The name of the CSV file to read.
+ * @returns {Array<Object>} An array of objects, where each object represents a row in the CSV file.
+ */
 function readCSV(filename) {
   try {
     const content = fs.readFileSync(filename, 'utf8');
@@ -62,7 +82,10 @@ function readCSV(filename) {
   }
 }
 
-// Get list of files in current directory (excluding script and CSV)
+/**
+ * Gets a list of files in the current directory, excluding the script itself and the CSV file.
+ * @returns {Map<string, Object>} A map of filenames to file metadata objects.
+ */
 function getCurrentDirectoryFiles() {
   const files = new Map();
 
@@ -96,7 +119,10 @@ function getCurrentDirectoryFiles() {
   return files;
 }
 
-// Main comparison function
+/**
+ * The main function of the script. It compares the files in the current directory with the data in the CSV file
+ * and prints a report of the differences.
+ */
 function compareListings() {
   console.log('🔍 Starting file comparison...\n');
 
